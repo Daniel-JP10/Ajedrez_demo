@@ -1,0 +1,173 @@
+/* ==========================================
+   CHESS MASTER PRO - DISEÑO RESPONSIVE
+   ========================================== */
+
+/* Móvil Pequeño (< 400px) */
+@media (max-width: 399px) {
+    .board-container {
+        padding: 4px;
+    }
+    
+    .piece {
+        width: 92%;
+        height: 92%;
+    }
+    
+    .side-panel {
+        padding: 0.75rem;
+    }
+    
+    .game-controls {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .difficulty-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .time-grid,
+    .color-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .accuracy-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .classification-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Móvil Estándar (400px - 640px) */
+@media (min-width: 400px) and (max-width: 639px) {
+    .board-container {
+        padding: 6px;
+    }
+    
+    .side-panel {
+        padding: 1rem;
+    }
+    
+    .game-controls {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .difficulty-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Tablet (640px - 967px) */
+@media (min-width: 640px) and (max-width: 967px) {
+    .game-layout {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .side-panel {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .game-controls {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+/* Desktop (968px+) */
+@media (min-width: 968px) {
+    .game-layout {
+        flex-direction: row;
+        padding: 1.5rem;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+    
+    .side-panel {
+        width: 320px;
+        flex-shrink: 0;
+        max-height: calc(100vh - 3rem);
+        overflow-y: auto;
+    }
+    
+    .game-controls {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Pantallas Grandes (1200px+) */
+@media (min-width: 1200px) {
+    .board-container {
+        max-width: 650px;
+    }
+    
+    .side-panel {
+        width: 350px;
+    }
+}
+
+/* Orientación Landscape en Móvil */
+@media (max-height: 500px) and (orientation: landscape) {
+    .screen.setup {
+        padding: 1rem;
+    }
+    
+    .screen-header {
+        margin-bottom: 1rem;
+    }
+    
+    .game-title {
+        font-size: 1.75rem;
+    }
+    
+    .setup-section {
+        margin-bottom: 1rem;
+    }
+    
+    .board-area {
+        padding: 0.25rem;
+    }
+    
+    .player-bar {
+        padding: 0.5rem 0.75rem;
+        margin: 0.25rem 0;
+    }
+}
+
+/* Soporte para Pantallas con Notch */
+@supports (padding: max(0px)) {
+    .screen {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+    }
+    
+    .status-bar {
+        padding-bottom: max(0.875rem, env(safe-area-inset-bottom));
+    }
+}
+
+/* Reducir Movimiento para Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Modo Oscuro del Sistema */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-dark: #0a0e17;
+        --secondary-dark: #111827;
+    }
+}
+
+/* Impresión */
+@media print {
+    .screen, .modal, .status-bar {
+        display: none !important;
+    }
+}

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Chess Master Pro - Entrena ajedrez contra IA competitiva">
+    <meta name="theme-color" content="#0d1218">
+    <title>Chess Master Pro</title>
+    <link rel="icon" href="data:,">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/styles.css" as="style">
+    <link rel="preload" href="js/config.js" as="script">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/board.css">
+    <link rel="stylesheet" href="css/pieces.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" defer></script>
+    
+    <!-- Application Scripts -->
+    <script src="js/config.js" defer></script>
+    <script src="js/pieces.js" defer></script>
+    <script src="js/sounds.js" defer></script>
+    <script src="js/game.js" defer></script>
+    <script src="js/ai.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/analysis.js" defer></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="screen loading">
+        <div class="spinner"></div>
+        <p class="loading-text">Cargando Chess Master Pro...</p>
+    </div>
+
+    <!-- Setup Screen -->
+    <div id="setupScreen" class="screen setup hidden">
+        <header class="screen-header">
+            <h1 class="game-title">♔ Chess Master Pro</h1>
+            <p class="game-subtitle">Entrena como un profesional</p>
+        </header>
+
+        <main class="setup-content">
+            <!-- Difficulty Selection -->
+            <section class="setup-section">
+                <h2 class="section-title">Nivel de Dificultad</h2>
+                <div class="difficulty-grid">
+                    <div class="difficulty-card" data-level="beginner">
+                        <div class="card-icon">🌱</div>
+                        <h3>Principiante</h3>
+                        <p>Aprende las bases del juego</p>
+                    </div>
+                    <div class="difficulty-card" data-level="intermediate">
+                        <div class="card-icon">⚡</div>
+                        <h3>Intermedio</h3>
+                        <p>Desafía tu estrategia</p>
+                    </div>
+                    <div class="difficulty-card" data-level="advanced">
+                        <div class="card-icon">🔥</div>
+                        <h3>Avanzado</h3>
+                        <p>Compite al máximo nivel</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Time Control -->
+            <section class="setup-section">
+                <h2 class="section-title">Control de Tiempo</h2>
+                <div class="time-grid">
+                    <div class="time-option" data-time="180">
+                        <span class="time-value">3:00</span>
+                        <span class="time-label">Blitz</span>
+                    </div>
+                    <div class="time-option" data-time="300">
+                        <span class="time-value">5:00</span>
+                        <span class="time-label">Rápido</span>
+                    </div>
+                    <div class="time-option" data-time="600">
+                        <span class="time-value">10:00</span>
+                        <span class="time-label">Clásico</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Color Selection -->
+            <section class="setup-section">
+                <h2 class="section-title">Jugar con</h2>
+                <div class="color-grid">
+                    <div class="color-option" data-color="white">
+                        <div class="color-preview white"></div>
+                        <span>Blancas</span>
+                    </div>
+                    <div class="color-option" data-color="black">
+                        <div class="color-preview black"></div>
+                        <span>Negras</span>
+                    </div>
+                    <div class="color-option" data-color="random">
+                        <div class="color-preview random"></div>
+                        <span>Aleatorio</span>
+                    </div>
+                </div>
+            </section>
+
+            <button id="startGameBtn" class="btn-primary" disabled>
+                Iniciar Partida
+            </button>
+        </main>
+
+        <!-- Tutorial Toggle -->
+        <button id="tutorialBtn" class="btn-secondary">
+            📖 Cómo Jugar
+        </button>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorialModal" class="modal hidden">
+        <div class="modal-content tutorial">
+            <header class="modal-header">
+                <h2>📖 Guía Rápida de Ajedrez</h2>
+                <button class="modal-close">&times;</button>
+            </header>
+            <main class="tutorial-content">
+                <section class="tutorial-section">
+                    <h3>♟️ Movimiento de Piezas</h3>
+                    <ul>
+                        <li><strong>Peón:</strong> Avanza 1 casilla (2 en primer movimiento). Captura en diagonal.</li>
+                        <li><strong>Torre:</strong> Se mueve en línea recta horizontal o vertical.</li>
+                        <li><strong>Caballo:</strong> Se mueve en "L" (2+1 casillas). Salta piezas.</li>
+                        <li><strong>Alfil:</strong> Se mueve en diagonal cualquier distancia.</li>
+                        <li><strong>Dama:</strong> Combina movimientos de Torre y Alfil.</li>
+                        <li><strong>Rey:</strong> Se mueve 1 casilla en cualquier dirección.</li>
+                    </ul>
+                </section>
+                <section class="tutorial-section">
+                    <h3>🎯 Reglas Especiales</h3>
+                    <ul>
+                        <li><strong>Enroque:</strong> Rey se mueve 2 casillas hacia la Torre, y esta salta al otro lado.</li>
+                        <li><strong>Captura al paso:</strong> Peón captura a otro peón que avanzó 2 casillas.</li>
+                        <li><strong>Promoción:</strong> Peón que llega al final se convierte en cualquier pieza.</li>
+                    </ul>
+                </section>
+                <section class="tutorial-section">
+                    <h3>🏆 Cómo Ganar</h3>
+                    <ul>
+                        <li><strong>Jaque Mate:</strong> El Rey está atacado y no puede escapar.</li>
+                        <li><strong>Tablas:</strong> Empate por ahogado, repetición o material insuficiente.</li>
+                        <li><strong>Tiempo:</strong> Si se acaba tu tiempo, pierdes.</li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen game hidden">
+        <div class="game-layout">
+            <!-- Board Area -->
+            <div class="board-area">
+                <div class="player-bar top">
+                    <div class="player-info">
+                        <div class="avatar">🤖</div>
+                        <div class="details">
+                            <span class="name">Stockfish</span>
+                            <span class="level" id="aiLevelDisplay">Intermedio</span>
+                        </div>
+                    </div>
+                    <div class="timer" id="aiTimer">10:00</div>
+                </div>
+
+                <div class="board-container">
+                    <div id="chessBoard" class="chess-board"></div>
+                </div>
+
+                <div class="player-bar bottom">
+                    <div class="player-info">
+                        <div class="avatar">👤</div>
+                        <div class="details">
+                            <span class="name">Tú</span>
+                            <span class="level" id="playerLevelDisplay">Tu turno</span>
+                        </div>
+                    </div>
+                    <div class="timer" id="playerTimer">10:00</div>
+                </div>
+            </div>
+
+            <!-- Side Panel -->
+            <aside class="side-panel">
+                <!-- API Status -->
+                <div class="api-status" id="apiStatus">
+                    <div class="status-dot" id="apiStatusDot"></div>
+                    <span id="apiStatusText">Conectando...</span>
+                </div>
+
+                <!-- Evaluation Bar -->
+                <div class="evaluation-container">
+                    <div class="evaluation-bar">
+                        <div class="evaluation-fill" id="evalFill"></div>
+                        <div class="evaluation-marker" id="evalMarker"></div>
+                    </div>
+                    <p class="evaluation-text" id="evalText">Posición equilibrada</p>
+                </div>
+
+                <!-- Move History -->
+                <div class="move-history-container">
+                    <h3>Historial de Jugadas</h3>
+                    <div id="moveHistory" class="move-history"></div>
+                </div>
+
+                <!-- Thinking Indicator -->
+                <div id="thinkingIndicator" class="thinking hidden">
+                    <div class="thinking-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <span>Analizando...</span>
+                </div>
+
+                <!-- Captured Pieces -->
+                <div class="captured-pieces" id="capturedPieces"></div>
+
+                <!-- Game Controls -->
+                <div class="game-controls">
+                    <button class="control-btn" id="undoBtn" title="Deshacer">↩️</button>
+                    <button class="control-btn" id="flipBtn" title="Girar Tablero">🔄</button>
+                    <button class="control-btn" id="soundBtn" title="Sonido">🔊</button>
+                    <button class="control-btn" id="drawBtn" title="Ofrecer Tablas">🤝</button>
+                    <button class="control-btn" id="hintBtn" title="Pista">💡</button>
+                    <button class="control-btn" id="resignBtn" title="Rendirse">🏳️</button>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Status Bar -->
+        <div id="statusBar" class="status-bar">
+            <span id="statusText">Tu turno</span>
+        </div>
+    </div>
+
+    <!-- Promotion Modal -->
+    <div id="promotionModal" class="modal hidden">
+        <div class="modal-content promotion">
+            <h2>Elige pieza para promoción</h2>
+            <div class="promotion-choices" id="promotionChoices"></div>
+        </div>
+    </div>
+
+    <!-- Analysis Screen -->
+    <div id="analysisScreen" class="screen analysis hidden">
+        <header class="analysis-header">
+            <h1 id="gameResult" class="game-result">¡Victoria!</h1>
+            <p class="analysis-subtitle">Análisis de tu partida</p>
+        </header>
+
+        <main class="analysis-content">
+            <div class="analysis-layout">
+                <!-- Tablero Interactivo -->
+                <div class="analysis-board-section">
+                    <div class="board-container">
+                        <div id="analysisBoard" class="chess-board"></div>
+                    </div>
+                    <div class="analysis-controls">
+                        <button id="btnPrevMove" class="btn-icon">⬅️ Anterior</button>
+                        <span id="analysisMoveText" class="move-text">Inicio</span>
+                        <button id="btnNextMove" class="btn-icon">Siguiente ➡️</button>
+                    </div>
+                </div>
+
+                <!-- Estadísticas -->
+                <div class="analysis-stats-section">
+                    <!-- Accuracy Cards -->
+            <div class="accuracy-grid">
+                <div class="accuracy-card">
+                    <h3>Tu Precisión</h3>
+                    <div class="accuracy-value" id="playerAccuracy">0%</div>
+                    <p class="performance-text" id="playerPerformance">Rendimiento estimado</p>
+                </div>
+                <div class="accuracy-card">
+                    <h3>Precisión IA</h3>
+                    <div class="accuracy-value" id="aiAccuracy">0%</div>
+                    <p class="performance-text">Nivel de juego</p>
+                </div>
+            </div>
+
+            <!-- Move Classification -->
+            <section class="classification-section">
+                <h2>Clasificación de Movimientos</h2>
+                <div class="classification-grid">
+                    <div class="classification-item excellent">
+                        <span class="icon">✨</span>
+                        <span class="count" id="excellentCount">0</span>
+                        <span class="label">Excelentes</span>
+                    </div>
+                    <div class="classification-item good">
+                        <span class="icon">✓</span>
+                        <span class="count" id="goodCount">0</span>
+                        <span class="label">Buenos</span>
+                    </div>
+                    <div class="classification-item inaccuracy">
+                        <span class="icon">⚠️</span>
+                        <span class="count" id="inaccuracyCount">0</span>
+                        <span class="label">Inexactitudes</span>
+                    </div>
+                    <div class="classification-item mistake">
+                        <span class="icon">❌</span>
+                        <span class="count" id="mistakeCount">0</span>
+                        <span class="label">Errores</span>
+                    </div>
+                    <div class="classification-item blunder">
+                        <span class="icon">💀</span>
+                        <span class="count" id="blunderCount">0</span>
+                        <span class="label">Graves</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Evaluation Graph -->
+            <section class="graph-section">
+                <h2>Evolución de la Partida</h2>
+                <div class="eval-graph-container">
+                    <canvas id="evalGraph"></canvas>
+                </div>
+            </section>
+
+            <!-- Key Moments -->
+            <section class="key-moments-section">
+                <h2>Momentos Clave</h2>
+                <div id="keyMoments" class="key-moments"></div>
+            </section>
+
+                </div> <!-- End stats section -->
+            </div> <!-- End layout -->
+
+            <button id="playAgainBtn" class="btn-primary">
+                🔄 Jugar de Nuevo
+            </button>
+        </main>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal hidden">
+        <div class="modal-content confirm">
+            <h2 id="confirmTitle">¿Estás seguro?</h2>
+            <p id="confirmText">Esta acción no se puede deshacer.</p>
+            <div class="confirm-actions">
+                <button id="confirmCancel" class="btn-secondary">Cancelar</button>
+                <button id="confirmOk" class="btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

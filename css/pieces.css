@@ -1,0 +1,73 @@
+/* ==========================================
+   CHESS MASTER PRO - ESTILOS DE PIEZAS
+   ========================================== */
+
+.piece {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  cursor: grab;
+  transition: transform var(--transition-fast);
+  z-index: 2;
+  position: relative;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none; /* El click lo maneja .square */
+}
+
+.piece:active {
+  cursor: grabbing;
+  transform: scale(1.08);
+}
+
+.piece.dragging {
+  position: fixed;
+  z-index: 9999;
+  transition: none !important;
+  opacity: 0.95;
+  filter: drop-shadow(4px 4px 10px rgba(0,0,0,0.5));
+  pointer-events: none !important;
+  margin: 0 !important;
+}
+
+body.is-dragging {
+  cursor: grabbing !important;
+}
+
+body.is-dragging * {
+  cursor: grabbing !important;
+}
+
+/* Efecto hover se aplica al contenedor .square */
+.square:hover .piece {
+  filter: drop-shadow(2px 3px 5px rgba(0, 0, 0, 0.5)) brightness(1.05);
+}
+
+@keyframes pieceMove {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.piece.moving {
+  animation: pieceMove 0.3s ease;
+}
+
+.captured-piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+  opacity: 0.8;
+}
+
+.promotion-piece img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.promotion-piece:hover img {
+  filter: drop-shadow(2px 2px 6px rgba(59, 130, 246, 0.5)) brightness(1.1);
+}
